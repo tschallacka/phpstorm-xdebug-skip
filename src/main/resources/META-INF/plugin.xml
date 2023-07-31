@@ -1,24 +1,16 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.tschallacka.phpstormxdebugskip</id>
+    <id>de.tschallacka.phpstormxdebugskip</id>
     <name>phpstorm-xdebug-skip Template</name>
     <vendor>tschallacka</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
+    <project-components>
+        <component>
+            <implementation-class>de.tschallacka.phpstormxdebugskip.MyPluginProjectComponent</implementation-class>
+        </component>
+    </project-components>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.tschallacka.phpstormxdebugskip.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.tschallacka.phpstormxdebugskip.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
-    
-    <actions>
-        <action class="com.github.tschallacka.phpstormxdebugskip.MyAction" id="MyAction">
-            <add-to-group group-id="StructureViewPopupMenu" />
-        </action>
-    </actions>
 </idea-plugin>
