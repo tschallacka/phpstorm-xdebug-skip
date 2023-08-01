@@ -1,0 +1,21 @@
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="de.tschallacka.phpstormxdebugskip.settings.SettingsDialog">
+    <grid id="27dc6" binding="myMainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <constraints>
+            <xy x="20" y="20" width="500" height="400"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+            <component id="82389" class="javax.swing.JScrollPane" binding="myNamespaceList">
+                <constraints>
+                    <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+            </component>
+            <component id="6346c" class="javax.swing.JScrollPane" binding="myFilePathList">
+                <constraints>
+                    <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+            </component>
+        </children>
+    </grid>
+</form>

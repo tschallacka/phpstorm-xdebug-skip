@@ -12,5 +12,8 @@
             <implementation-class>de.tschallacka.phpstormxdebugskip.MyPluginProjectComponent</implementation-class>
         </component>
     </project-components>
-
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extension point here -->
+        <projectConfigurable instance="de.tschallacka.phpstormxdebugskip.settings.SettingsConfigurable" />
+    </extensions>
 </idea-plugin>
