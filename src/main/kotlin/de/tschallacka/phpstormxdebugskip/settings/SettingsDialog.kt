@@ -15,7 +15,7 @@ class SettingsDialog : DialogWrapper(true) {
     }
 
     @Nullable
-    override fun createCenterPanel(): JComponent? {
+    public override fun createCenterPanel(): JComponent? {
         return myMainPanel
     }
 }

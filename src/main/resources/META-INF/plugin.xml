@@ -5,6 +5,7 @@
     <vendor>tschallacka</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.jetbrains.php</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
     <project-components>
@@ -15,5 +16,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extension point here -->
         <projectConfigurable instance="de.tschallacka.phpstormxdebugskip.settings.SettingsConfigurable" />
+        <applicationService serviceImplementation="de.tschallacka.phpstormxdebugskip.settings.Settings"/>
     </extensions>
 </idea-plugin>

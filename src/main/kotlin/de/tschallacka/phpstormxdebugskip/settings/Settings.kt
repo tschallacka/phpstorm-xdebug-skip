@@ -6,7 +6,11 @@ import org.jetbrains.annotations.Nullable
 
 @State(
     name = "de.tschallacka.phpstormxdebugskip.Settings",
-    storages = [Storage(StoragePathMacros.WORKSPACE_FILE)]
+    storages = [Storage("de.tschallacka.phpstormxdebugskip.xml", // File path relative to component container
+        deprecated = false,
+        roamingType = RoamingType.DEFAULT,
+        storageClass = StateStorage::class,
+        exportable = true)]
 )
 class Settings : PersistentStateComponent<Settings.State> {
 

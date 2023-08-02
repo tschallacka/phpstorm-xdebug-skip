@@ -5,31 +5,50 @@ import com.intellij.xdebugger.XDebuggerManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Trinity
 import com.intellij.xdebugger.XDebugSessionListener
+import de.tschallacka.phpstormxdebugskip.settings.Settings // Assuming this is the location of your Settings class
 
 class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerListener {
     override fun processStarted(debugProcess: XDebugProcess) {
-        val session = debugProcess.session;
+        val session = debugProcess.session
         session.addSessionListener(object : XDebugSessionListener {
             override fun sessionPaused() {
-                var frame = session.currentStackFrame;
-                var frameDataObject = frame?.getEqualityObject();
+                val frame = session.currentStackFrame
+                val frameDataObject = frame?.getEqualityObject()
                 if (frameDataObject is Trinity<*, *, *>) {
-                    var frameData = frameDataObject as Trinity<Integer, String, String>
-                    var path = frameData.second;
-                    var functioName = frameData.third;
-                    var regex = Regex("(.*)->.*");
-                    var match = regex.matchEntire(functioName);
-                    var namespace = match?.groupValues?.get(1);
-                    if (namespace != null && isSkippableNamespace(namespace)) {
-                        session.stepOver(false);
+                    val frameData = frameDataObject as Trinity<Int, String, String>
+                    val path = frameData.second
+                    val functionName = frameData.third
+                    val regex = Regex("(.*)->.*")
+                    val match = regex.matchEntire(functionName)
+                    val namespace = match?.groupValues?.get(1)
+                    if (namespace != null && isSkippableNamespace("\\"+namespace)) {
+                        session.stepInto()
+                        return
+                    }
+                    if (path != null && isSkippableFilePath(path)) {
+                        session.stepInto()
+                        return
                     }
                 }
             }
         })
     }
 
-    public fun isSkippableNamespace(namespace: String): Boolean {
-      return namespace.contains("FOO\\Bar");
+    private fun isSkippableNamespace(namespace: String): Boolean {
+        val settings = Settings.getInstance()
+        val namespaces = settings.settingsState.namespaces;
+        val match = namespaces.any {
+            ns -> namespace.contains(ns)
+        }
+        return match
+    }
 
+    private fun isSkippableFilePath(path: String): Boolean {
+        val settings = Settings.getInstance()
+        val filepaths = settings.settingsState.filepaths;
+        val match = filepaths.any {
+            filepath -> path.contains(filepath)
+        }
+        return match
     }
 }

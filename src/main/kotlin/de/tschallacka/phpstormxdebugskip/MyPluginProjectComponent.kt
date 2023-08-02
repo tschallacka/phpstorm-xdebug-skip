@@ -11,7 +11,4 @@ class MyPluginProjectComponent(private val project: Project) : ProjectComponent 
         val listener = MyXDebugProcessListener(project)
         project.messageBus.connect().subscribe(XDebuggerManager.TOPIC, listener)
     }
-
-    // Other overridden methods here...
-
 }
