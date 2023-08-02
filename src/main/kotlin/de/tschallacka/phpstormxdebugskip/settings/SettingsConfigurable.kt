@@ -98,7 +98,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         namespaceModel.addAll(settings.settingsState.namespaces)
     }
 
-    override fun getDisplayName(): String = "PHPStorm Xdebug Skip"
+    override fun getDisplayName(): String = "Xdebug Skip"
 
     private fun createListRenderer(): ColoredListCellRenderer<String> {
         return object : ColoredListCellRenderer<String>() {
