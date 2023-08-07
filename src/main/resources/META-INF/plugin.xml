@@ -1,21 +1,21 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>de.tschallacka.phpstormxdebugskip</id>
-    <name>phpstorm-xdebug-skip</name>
+    <name>xdebug-skip</name>
     <vendor>tschallacka</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.jetbrains.php</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
-    <project-components>
-        <component>
-            <implementation-class>de.tschallacka.phpstormxdebugskip.MyPluginProjectComponent</implementation-class>
-        </component>
-    </project-components>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extension point here -->
         <projectConfigurable instance="de.tschallacka.phpstormxdebugskip.settings.SettingsConfigurable" />
         <applicationService serviceImplementation="de.tschallacka.phpstormxdebugskip.settings.Settings"/>
     </extensions>
+    <projectListeners>
+        <listener class="de.tschallacka.phpstormxdebugskip.listeners.MyXDebugProcessListener"
+                  topic="com.intellij.xdebugger.XDebuggerManagerListener"
+        />
+    </projectListeners>
 </idea-plugin>

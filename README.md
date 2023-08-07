@@ -1,7 +1,7 @@
-# phpstorm-xdebug-skip
+# xdebug-skip
 
 ![Build](https://github.com/tschallacka/phpstorm-xdebug-skip/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+[![Version](https://img.shields.io/jetbrains/plugin/v/phpstorm-xdebug-skip.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
 - [ ] Set the `PLUGIN_ID` in the above README badges.

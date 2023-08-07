@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# phpstorm-xdebug-skip Changelog
+# xdebug-skip Changelog
 
 ## 0.1.0 - 2021-10-17
 ### Added

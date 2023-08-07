@@ -1,5 +1,6 @@
 package de.tschallacka.phpstormxdebugskip.settings
 
+import com.intellij.ide.util.ChooseElementsDialog
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.options.Configurable
@@ -8,9 +9,12 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.components.JBList
+import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.config.PhpTreeClassChooserDialog
+import com.jetbrains.php.lang.psi.elements.PhpNamespace
 import java.awt.BorderLayout
 import javax.swing.*
+import kotlin.streams.toList
 
 class SettingsConfigurable(private val project: Project) : Configurable {
 
@@ -20,7 +24,8 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 
     private val filePathModel = DefaultListModel<String>().apply { addAll(settings.settingsState.filepaths) }
     private val namespaceModel = DefaultListModel<String>().apply { addAll(settings.settingsState.namespaces) }
-
+    var skipIncludes = settings.settingsState.skipIncludes;
+    var skipConstructors = settings.settingsState.skipConstructors;
     private val filePathList = JBList<String>(filePathModel)
     private val namespaceList = JBList<String>(namespaceModel)
 
@@ -48,30 +53,37 @@ class SettingsConfigurable(private val project: Project) : Configurable {
             }
         }
         panel.add(filePathDecorator.createPanel())
-        JLabel("Don't halt the debugger in these namespaces").also { panel.add(it) }
-        JLabel("Click the + twice to activate the selector. It doesn't display the panel on first click.").also { panel.add(it) }
-        // Create a decorator for namespaces
-        val namespaceDecorator = ToolbarDecorator.createDecorator(namespaceList)
-        namespaceDecorator.setAddAction { addButton ->
-            namespaceDecorator.setAddAction { addButton ->
-                val dialog = PhpTreeClassChooserDialog("Select PHP namespaces", project, null)
-                dialog.showDialog()
-                val selectedPhpClass = dialog.selected
-                if (selectedPhpClass != null) {
-                    var selectedNamespace = selectedPhpClass.namespaceName
-                    if (selectedNamespace != null) {
-                        namespaceModel.addElement(selectedNamespace)
-                    }
-                }
-            }
-        }.setRemoveAction { removeButton ->
-            val selectedNamespaces = namespaceList.selectedValuesList
-            selectedNamespaces.forEach { namespace ->
-                namespaceModel.removeElement(namespace)
-            }
+//        JLabel("Don't halt the debugger in these namespaces").also { panel.add(it) }
+//        JLabel("Click the + twice to activate the selector. It doesn't display the panel on first click.").also { panel.add(it) }
+//        // Create a decorator for namespaces
+//        val namespaceDecorator = ToolbarDecorator.createDecorator(namespaceList)
+//        namespaceDecorator.setAddAction { addButton ->
+//            namespaceDecorator.setAddAction { addButton ->
+//                val phpIndex = PhpIndex.getInstance(project)
+//                val namespaces = phpIndex.getNamespacesByName("");
+//                var namespaceList = ArrayList<String>();
+//                val dialog = NamespaceChooser(project, namespaces.stream().toList(),"Select PHP namespaces", "hatseflats",true)
+//                dialog.show();
+//            }
+//        }.setRemoveAction { removeButton ->
+//            val selectedNamespaces = namespaceList.selectedValuesList
+//            selectedNamespaces.forEach { namespace ->
+//                namespaceModel.removeElement(namespace)
+//            }
+//        }
+//        panel.add(namespaceDecorator.createPanel())
+        val skipincludes = JCheckBox("skip includes")
+        skipincludes.isSelected = skipConstructors
+        skipincludes.addActionListener() {
+            skipIncludes = skipincludes.isSelected
         }
-        panel.add(namespaceDecorator.createPanel())
-
+        panel.add(skipincludes)
+        val skipconstructors = JCheckBox("skip constructors")
+        skipconstructors.isSelected = skipConstructors
+        skipconstructors.addActionListener() {
+            skipConstructors = skipconstructors.isSelected
+        }
+        panel.add(skipconstructors)
         return panel
     }
 
@@ -79,6 +91,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         val filePaths = (0 until filePathModel.size()).map { i -> filePathModel.getElementAt(i) }
         val namespaces = (0 until namespaceModel.size()).map { i -> namespaceModel.getElementAt(i) }
         return filePaths != settings.settingsState.filepaths || namespaces != settings.settingsState.namespaces
+                || skipIncludes != settings.settingsState.skipIncludes || skipConstructors != settings.settingsState.skipConstructors
     }
 
     override fun apply() {
@@ -89,6 +102,8 @@ class SettingsConfigurable(private val project: Project) : Configurable {
             filePathModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
         settings?.settingsState?.namespaces =
             namespaceModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
+        settings?.settingsState?.skipIncludes = skipIncludes
+        settings?.settingsState?.skipConstructors = skipConstructors
     }
 
     override fun reset() {
@@ -96,6 +111,8 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         filePathModel.addAll(settings.settingsState.filepaths)
         namespaceModel.clear()
         namespaceModel.addAll(settings.settingsState.namespaces)
+        settings.settingsState.skipIncludes = false
+        settings.settingsState.skipConstructors = false
     }
 
     override fun getDisplayName(): String = "Xdebug Skip"

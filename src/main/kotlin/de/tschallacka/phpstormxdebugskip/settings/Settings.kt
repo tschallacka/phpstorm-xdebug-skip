@@ -15,7 +15,10 @@ import org.jetbrains.annotations.Nullable
 class Settings : PersistentStateComponent<Settings.State> {
 
     data class State(var namespaces: ArrayList<String> = arrayListOf(),
-                     var filepaths: ArrayList<String> = arrayListOf())
+                     var filepaths: ArrayList<String> = arrayListOf(),
+                     var skipIncludes: Boolean = true,
+                     var skipConstructors: Boolean = true,
+        )
 
     var settingsState: State = State()
 

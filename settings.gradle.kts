@@ -1,1 +1,1 @@
-rootProject.name = "phpstorm-xdebug-skip"
+rootProject.name = "xdebug-skip"
