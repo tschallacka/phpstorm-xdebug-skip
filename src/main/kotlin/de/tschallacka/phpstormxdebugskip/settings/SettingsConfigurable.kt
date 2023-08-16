@@ -26,6 +26,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     private val namespaceModel = DefaultListModel<String>().apply { addAll(settings.settingsState.namespaces) }
     var skipIncludes = settings.settingsState.skipIncludes;
     var skipConstructors = settings.settingsState.skipConstructors;
+    var haltOnBreakpoints = settings.settingsState.haltOnBreakpoints;
     private val filePathList = JBList<String>(filePathModel)
     private val namespaceList = JBList<String>(namespaceModel)
 
@@ -73,7 +74,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 //        }
 //        panel.add(namespaceDecorator.createPanel())
         val skipincludes = JCheckBox("skip includes")
-        skipincludes.isSelected = skipConstructors
+        skipincludes.isSelected = skipIncludes
         skipincludes.addActionListener() {
             skipIncludes = skipincludes.isSelected
         }
@@ -84,14 +85,23 @@ class SettingsConfigurable(private val project: Project) : Configurable {
             skipConstructors = skipconstructors.isSelected
         }
         panel.add(skipconstructors)
+        val haltonbreakpoints = JCheckBox("halt on breakpoints, when skipping matches")
+        haltonbreakpoints.isSelected = haltOnBreakpoints
+        haltonbreakpoints.addActionListener() {
+            haltOnBreakpoints = haltonbreakpoints.isSelected
+        }
+        panel.add(haltonbreakpoints)
         return panel
     }
 
     override fun isModified(): Boolean {
         val filePaths = (0 until filePathModel.size()).map { i -> filePathModel.getElementAt(i) }
         val namespaces = (0 until namespaceModel.size()).map { i -> namespaceModel.getElementAt(i) }
-        return filePaths != settings.settingsState.filepaths || namespaces != settings.settingsState.namespaces
-                || skipIncludes != settings.settingsState.skipIncludes || skipConstructors != settings.settingsState.skipConstructors
+        return filePaths != settings.settingsState.filepaths
+                || namespaces != settings.settingsState.namespaces
+                || skipIncludes != settings.settingsState.skipIncludes
+                || skipConstructors != settings.settingsState.skipConstructors
+                || haltOnBreakpoints != settings.settingsState.haltOnBreakpoints
     }
 
     override fun apply() {
@@ -104,6 +114,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
             namespaceModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
         settings?.settingsState?.skipIncludes = skipIncludes
         settings?.settingsState?.skipConstructors = skipConstructors
+        settings?.settingsState?.haltOnBreakpoints = haltOnBreakpoints
     }
 
     override fun reset() {
@@ -113,6 +124,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         namespaceModel.addAll(settings.settingsState.namespaces)
         settings.settingsState.skipIncludes = false
         settings.settingsState.skipConstructors = false
+        settings.settingsState.haltOnBreakpoints = true
     }
 
     override fun getDisplayName(): String = "Xdebug Skip"
