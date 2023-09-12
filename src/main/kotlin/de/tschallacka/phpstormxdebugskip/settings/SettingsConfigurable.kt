@@ -72,7 +72,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         }
         panel.add(skipincludes)
         val alsoSkipNonphpIncludes = JCheckBox("Also skip non .php extension includes(template files, etc...)");
-        alsoSkipNonphpIncludes.isSelected = false
+        alsoSkipNonphpIncludes.isSelected = alsoSkipNonPhpIncludes
         alsoSkipNonphpIncludes.addActionListener() {
             alsoSkipNonPhpIncludes = alsoSkipNonphpIncludes.isSelected
         }
@@ -100,6 +100,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
                 || skipIncludes != settings.settingsState.skipIncludes
                 || skipConstructors != settings.settingsState.skipConstructors
                 || haltOnBreakpoints != settings.settingsState.haltOnBreakpoints
+                || alsoSkipNonPhpIncludes != settings.settingsState.alsoSkipNonPhpIncludes
     }
 
     override fun apply() {
@@ -124,6 +125,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         settings.settingsState.skipIncludes = false
         settings.settingsState.skipConstructors = false
         settings.settingsState.haltOnBreakpoints = true
+        settings.settingsState.alsoSkipNonPhpIncludes = false
     }
 
     override fun getDisplayName(): String = "Xdebug Skip"
