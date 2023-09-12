@@ -1,33 +1,24 @@
 package de.tschallacka.phpstormxdebugskip.settings
 
-import com.intellij.ide.util.ChooseElementsDialog
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.components.JBList
-import com.jetbrains.php.PhpIndex
-import com.jetbrains.php.config.PhpTreeClassChooserDialog
-import com.jetbrains.php.lang.psi.elements.PhpNamespace
-import java.awt.BorderLayout
 import javax.swing.*
-import kotlin.streams.toList
 
 class SettingsConfigurable(private val project: Project) : Configurable {
 
     private val settings = Settings.getInstance()
 
-    private val modified = false
-
     private val filePathModel = DefaultListModel<String>().apply { addAll(settings.settingsState.filepaths) }
     private val namespaceModel = DefaultListModel<String>().apply { addAll(settings.settingsState.namespaces) }
-    var skipIncludes = settings.settingsState.skipIncludes;
-    var alsoSkipNonPhpIncludes = settings.settingsState.alsoSkipNonPhpIncludes;
-    var skipConstructors = settings.settingsState.skipConstructors;
-    var haltOnBreakpoints = settings.settingsState.haltOnBreakpoints;
+    private var skipIncludes = settings.settingsState.skipIncludes;
+    private var alsoSkipNonPhpIncludes = settings.settingsState.alsoSkipNonPhpIncludes;
+    private var skipConstructors = settings.settingsState.skipConstructors;
+    private var haltOnBreakpoints = settings.settingsState.haltOnBreakpoints;
     private val filePathList = JBList<String>(filePathModel)
     private val namespaceList = JBList<String>(namespaceModel)
 
@@ -122,6 +113,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         settings?.settingsState?.skipIncludes = skipIncludes
         settings?.settingsState?.skipConstructors = skipConstructors
         settings?.settingsState?.haltOnBreakpoints = haltOnBreakpoints
+        settings?.settingsState?.alsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes
     }
 
     override fun reset() {
