@@ -73,7 +73,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 //        }
 //        panel.add(namespaceDecorator.createPanel())
         val skipincludes = JCheckBox("skip includes")
-        skipincludes.isSelected = skipConstructors
+        skipincludes.isSelected = skipIncludes
         skipincludes.addActionListener() {
             skipIncludes = skipincludes.isSelected
         }
