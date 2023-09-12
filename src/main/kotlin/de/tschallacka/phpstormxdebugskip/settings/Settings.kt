@@ -18,7 +18,8 @@ class Settings : PersistentStateComponent<Settings.State> {
                      var filepaths: ArrayList<String> = arrayListOf(),
                      var skipIncludes: Boolean = false,
                      var skipConstructors: Boolean = false,
-                     var haltOnBreakpoints: Boolean = true
+                     var haltOnBreakpoints: Boolean = true,
+                     var alsoSkipNonPhpIncludes: Boolean = false
         )
 
     var settingsState: State = State()

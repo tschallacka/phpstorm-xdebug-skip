@@ -25,6 +25,7 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     private val filePathModel = DefaultListModel<String>().apply { addAll(settings.settingsState.filepaths) }
     private val namespaceModel = DefaultListModel<String>().apply { addAll(settings.settingsState.namespaces) }
     var skipIncludes = settings.settingsState.skipIncludes;
+    var alsoSkipNonPhpIncludes = settings.settingsState.alsoSkipNonPhpIncludes;
     var skipConstructors = settings.settingsState.skipConstructors;
     var haltOnBreakpoints = settings.settingsState.haltOnBreakpoints;
     private val filePathList = JBList<String>(filePathModel)
@@ -73,19 +74,25 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 //            }
 //        }
 //        panel.add(namespaceDecorator.createPanel())
-        val skipincludes = JCheckBox("skip includes")
+        val skipincludes = JCheckBox("skip .php include/requires")
         skipincludes.isSelected = skipIncludes
         skipincludes.addActionListener() {
             skipIncludes = skipincludes.isSelected
         }
         panel.add(skipincludes)
+        val alsoSkipNonphpIncludes = JCheckBox("Also skip non .php extension includes(template files, etc...)");
+        alsoSkipNonphpIncludes.isSelected = false
+        alsoSkipNonphpIncludes.addActionListener() {
+            alsoSkipNonPhpIncludes = alsoSkipNonphpIncludes.isSelected
+        }
+        panel.add(alsoSkipNonphpIncludes)
         val skipconstructors = JCheckBox("skip constructors")
         skipconstructors.isSelected = skipConstructors
         skipconstructors.addActionListener() {
             skipConstructors = skipconstructors.isSelected
         }
         panel.add(skipconstructors)
-        val haltonbreakpoints = JCheckBox("halt on breakpoints, when skipping matches")
+        val haltonbreakpoints = JCheckBox("halt on breakpoints, when skipping")
         haltonbreakpoints.isSelected = haltOnBreakpoints
         haltonbreakpoints.addActionListener() {
             haltOnBreakpoints = haltonbreakpoints.isSelected

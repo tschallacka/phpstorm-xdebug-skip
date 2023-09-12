@@ -8,9 +8,12 @@ import com.intellij.openapi.util.Trinity
 import com.intellij.util.containers.stream
 import com.intellij.xdebugger.XDebugSessionListener
 import com.intellij.xdebugger.XDebuggerManager
+import com.intellij.xdebugger.XSourcePosition
 import com.intellij.xdebugger.breakpoints.XBreakpoint
-import com.intellij.xdebugger.impl.breakpoints.XBreakpointBase
+import com.intellij.xdebugger.breakpoints.XLineBreakpoint
 import de.tschallacka.phpstormxdebugskip.settings.Settings // Assuming this is the location of your Settings class
+import io.ktor.util.*
+import org.jetbrains.annotations.NonNls
 
 class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerListener {
     protected val Ns_FnRegex = Regex("(.*)->(.*)");
@@ -34,15 +37,20 @@ class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerLi
                     val functionName = frameData.third
 
                     val isBreakpoint = currentSourcePosition != null && breakpoints.stream().anyMatch {
+                        if(!it.isEnabled) return@anyMatch false
+                        if(!(it is XLineBreakpoint)) {
+                            return@anyMatch false
+                        }
+
                         val sourceposition = it.sourcePosition
-                        val equals = sourceposition?.equals(currentSourcePosition);
+                        val equals = doSourcePositionsMatch(sourceposition, currentSourcePosition);
                         return@anyMatch equals == true
                     }
                     // this doesn't work yet...
                     if (isBreakpoint && shouldHaltOnBreakpoints()) {
                         return
                     }
-                    if(skipIncludes(functionName)) {
+                    if(skipIncludes(functionName, path, localpath)) {
                         session.stepInto()
                         return
                     }
@@ -67,6 +75,22 @@ class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerLi
         })
     }
 
+    public fun doSourcePositionsMatch(sourcePosition: XSourcePosition?, currentSourcePosition: XSourcePosition?): Boolean {
+        if(sourcePosition == null || currentSourcePosition == null) {
+            return false
+        }
+        if(sourcePosition.file != currentSourcePosition.file) {
+            return false
+        }
+        if(sourcePosition.line != currentSourcePosition.line) {
+            return false
+        }
+        if(sourcePosition.offset != currentSourcePosition.offset) {
+            return false
+        }
+        return true
+    }
+
     private fun shouldHaltOnBreakpoints(): Boolean {
         val settings = Settings.getInstance()
         return settings.settingsState.haltOnBreakpoints
@@ -82,11 +106,18 @@ class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerLi
         }
         return false
     }
-    private fun skipIncludes(functionName: String): Boolean {
+    private fun skipIncludes(functionName: String, path: String, localpath: @NonNls String?): Boolean {
         val settings = Settings.getInstance()
         if(!settings.settingsState.skipIncludes) return false
         if(functionName == "include" || functionName == "require" || functionName == "include_once" || functionName == "require_once") {
-            return true
+            // get extension from path
+            if(settings.settingsState.alsoSkipNonPhpIncludes) {
+                return true
+            }
+            val extension = path.substringAfterLast(".").toLowerCasePreservingASCIIRules();
+            if(extension == "php") {
+                return true
+            }
         }
         return false
     }
