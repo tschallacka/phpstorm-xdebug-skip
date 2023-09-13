@@ -11,7 +11,7 @@ class SettingsDialog : DialogWrapper(true) {
 
     init {
         init()
-        title = "Settings"
+        title = "Xdebug Skip Settings"
     }
 
     @Nullable

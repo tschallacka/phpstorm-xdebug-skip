@@ -12,16 +12,27 @@
 <!-- Plugin description -->
 # Xdebug Skip
 
-Select namespaces and filepaths in the settings, and you will ignore those when stepping through code with xdebug.
-You will resume where the code exits those filepaths or namespaces.
+Select filepaths in the settings, and you will ignore those when stepping through code with xdebug.
+You will resume where the code exits those filepaths.
+You can also select to skip constructors, and to halt on breakpoints in skipped files.
+This means that if you have a breakpoint in a skipped file, it will halt on that breakpoint, but you cannot step through the file without more breakpoints
+This might get added in a future release.
+
+It is also possible to skip includes, so you don't have to watch every file that gets autoloaded by composer or other autoloaders.
+By default it will only skip files that have a .php extension, but you can also select to skip files that have a different extension.
+This is seperated so you do stop when template files are included, but you can still skip files that are included by composer.
 
 ## Usage
 
 1. Open the settings
 2. Go to Xdebug Skip
-3. Select paths and namespaces to ignore
-4. Start debugging
-5. Profit
+3. Select paths  to ignore
+4. Select wether you wish to skip constructors or not
+5. select wether you wish to halt on breakpoints in skipped files or not
+6. select wether you wish to skip includes/requires of .php files
+7. select wether you wish to skip includes if they have different extensions
+8. Start debugging
+9. Profit
 
 <!-- Plugin description end -->
 

@@ -94,27 +94,35 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 
     override fun isModified(): Boolean {
         val filePaths = (0 until filePathModel.size()).map { i -> filePathModel.getElementAt(i) }
-        val namespaces = (0 until namespaceModel.size()).map { i -> namespaceModel.getElementAt(i) }
-        return filePaths != settings.settingsState.filepaths
-                || namespaces != settings.settingsState.namespaces
-                || skipIncludes != settings.settingsState.skipIncludes
-                || skipConstructors != settings.settingsState.skipConstructors
-                || haltOnBreakpoints != settings.settingsState.haltOnBreakpoints
-                || alsoSkipNonPhpIncludes != settings.settingsState.alsoSkipNonPhpIncludes
+        // compare filePaths to settings.settingsState.filepaths
+        val similarFilePaths = filePaths == settings.settingsState.filepaths
+
+        //val namespaces = (0 until namespaceModel.size()).map { i -> namespaceModel.getElementAt(i) }
+        //val similarNamespaces = namespaces == settings.settingsState.namespaces
+        val similarSkipIncludes = skipIncludes == settings.settingsState.skipIncludes
+        val similarSkipConstructors = skipConstructors == settings.settingsState.skipConstructors
+        val similarHaltOnBreakpoints = haltOnBreakpoints == settings.settingsState.haltOnBreakpoints
+        val similarAlsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes == settings.settingsState.alsoSkipNonPhpIncludes
+
+        return !similarFilePaths
+                || !similarSkipIncludes
+                || !similarSkipConstructors
+                || !similarHaltOnBreakpoints
+                || !similarAlsoSkipNonPhpIncludes
     }
 
     override fun apply() {
         val filePathModel = filePathList.model as? DefaultListModel<String>
         val namespaceModel = namespaceList.model as? DefaultListModel<String>
 
-        settings?.settingsState?.filepaths =
+        settings.settingsState.filepaths =
             filePathModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
-        settings?.settingsState?.namespaces =
+        settings.settingsState.namespaces =
             namespaceModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
-        settings?.settingsState?.skipIncludes = skipIncludes
-        settings?.settingsState?.skipConstructors = skipConstructors
-        settings?.settingsState?.haltOnBreakpoints = haltOnBreakpoints
-        settings?.settingsState?.alsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes
+        settings.settingsState.skipIncludes = skipIncludes
+        settings.settingsState.skipConstructors = skipConstructors
+        settings.settingsState.haltOnBreakpoints = haltOnBreakpoints
+        settings.settingsState.alsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes
     }
 
     override fun reset() {
@@ -122,10 +130,10 @@ class SettingsConfigurable(private val project: Project) : Configurable {
         filePathModel.addAll(settings.settingsState.filepaths)
         namespaceModel.clear()
         namespaceModel.addAll(settings.settingsState.namespaces)
-        settings.settingsState.skipIncludes = false
-        settings.settingsState.skipConstructors = false
-        settings.settingsState.haltOnBreakpoints = true
-        settings.settingsState.alsoSkipNonPhpIncludes = false
+        skipIncludes = settings.settingsState.skipIncludes
+        skipConstructors = settings.settingsState.skipConstructors
+        haltOnBreakpoints = settings.settingsState.haltOnBreakpoints
+        alsoSkipNonPhpIncludes = settings.settingsState.alsoSkipNonPhpIncludes
     }
 
     override fun getDisplayName(): String = "Xdebug Skip"
