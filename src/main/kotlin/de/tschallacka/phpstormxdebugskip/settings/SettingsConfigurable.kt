@@ -46,25 +46,6 @@ class SettingsConfigurable(private val project: Project) : Configurable {
             }
         }
         panel.add(filePathDecorator.createPanel())
-//        JLabel("Don't halt the debugger in these namespaces").also { panel.add(it) }
-//        JLabel("Click the + twice to activate the selector. It doesn't display the panel on first click.").also { panel.add(it) }
-//        // Create a decorator for namespaces
-//        val namespaceDecorator = ToolbarDecorator.createDecorator(namespaceList)
-//        namespaceDecorator.setAddAction { addButton ->
-//            namespaceDecorator.setAddAction { addButton ->
-//                val phpIndex = PhpIndex.getInstance(project)
-//                val namespaces = phpIndex.getNamespacesByName("");
-//                var namespaceList = ArrayList<String>();
-//                val dialog = NamespaceChooser(project, namespaces.stream().toList(),"Select PHP namespaces", "hatseflats",true)
-//                dialog.show();
-//            }
-//        }.setRemoveAction { removeButton ->
-//            val selectedNamespaces = namespaceList.selectedValuesList
-//            selectedNamespaces.forEach { namespace ->
-//                namespaceModel.removeElement(namespace)
-//            }
-//        }
-//        panel.add(namespaceDecorator.createPanel())
         val skipincludes = JCheckBox("skip .php include/requires")
         skipincludes.isSelected = skipIncludes
         skipincludes.addActionListener() {
@@ -94,15 +75,16 @@ class SettingsConfigurable(private val project: Project) : Configurable {
 
     override fun isModified(): Boolean {
         val filePaths = (0 until filePathModel.size()).map { i -> filePathModel.getElementAt(i) }
+        val state = settings.settingsState;
         // compare filePaths to settings.settingsState.filepaths
-        val similarFilePaths = filePaths == settings.settingsState.filepaths
+        val similarFilePaths = filePaths == state.filepaths
 
         //val namespaces = (0 until namespaceModel.size()).map { i -> namespaceModel.getElementAt(i) }
-        //val similarNamespaces = namespaces == settings.settingsState.namespaces
-        val similarSkipIncludes = skipIncludes == settings.settingsState.skipIncludes
-        val similarSkipConstructors = skipConstructors == settings.settingsState.skipConstructors
-        val similarHaltOnBreakpoints = haltOnBreakpoints == settings.settingsState.haltOnBreakpoints
-        val similarAlsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes == settings.settingsState.alsoSkipNonPhpIncludes
+        //val similarNamespaces = namespaces == state.namespaces
+        val similarSkipIncludes = skipIncludes == state.skipIncludes
+        val similarSkipConstructors = skipConstructors == state.skipConstructors
+        val similarHaltOnBreakpoints = haltOnBreakpoints == state.haltOnBreakpoints
+        val similarAlsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes == state.alsoSkipNonPhpIncludes
 
         return !similarFilePaths
                 || !similarSkipIncludes
@@ -114,26 +96,28 @@ class SettingsConfigurable(private val project: Project) : Configurable {
     override fun apply() {
         val filePathModel = filePathList.model as? DefaultListModel<String>
         val namespaceModel = namespaceList.model as? DefaultListModel<String>
+        val state = settings.settingsState;
 
-        settings.settingsState.filepaths =
+        state.filepaths =
             filePathModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
-        settings.settingsState.namespaces =
+        state.namespaces =
             namespaceModel?.let { (0 until it.size()).map { i -> it.getElementAt(i) } }?.let { ArrayList(it) }!!
-        settings.settingsState.skipIncludes = skipIncludes
-        settings.settingsState.skipConstructors = skipConstructors
-        settings.settingsState.haltOnBreakpoints = haltOnBreakpoints
-        settings.settingsState.alsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes
+        state.skipIncludes = skipIncludes
+        state.skipConstructors = skipConstructors
+        state.haltOnBreakpoints = haltOnBreakpoints
+        state.alsoSkipNonPhpIncludes = alsoSkipNonPhpIncludes
     }
 
     override fun reset() {
         filePathModel.clear()
-        filePathModel.addAll(settings.settingsState.filepaths)
+        val state = settings.settingsState;
+        filePathModel.addAll(state.filepaths)
         namespaceModel.clear()
-        namespaceModel.addAll(settings.settingsState.namespaces)
-        skipIncludes = settings.settingsState.skipIncludes
-        skipConstructors = settings.settingsState.skipConstructors
-        haltOnBreakpoints = settings.settingsState.haltOnBreakpoints
-        alsoSkipNonPhpIncludes = settings.settingsState.alsoSkipNonPhpIncludes
+        namespaceModel.addAll(state.namespaces)
+        skipIncludes = state.skipIncludes
+        skipConstructors = state.skipConstructors
+        haltOnBreakpoints = state.haltOnBreakpoints
+        alsoSkipNonPhpIncludes = state.alsoSkipNonPhpIncludes
     }
 
     override fun getDisplayName(): String = "Xdebug Skip"

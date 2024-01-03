@@ -31,7 +31,7 @@ class MyXDebugProcessListener(private val project: Project) : XDebuggerManagerLi
                 val currentSourcePosition = frame?.sourcePosition
                 val frameDataObject = frame?.getEqualityObject()
                 if (frameDataObject is Trinity<*, *, *>) {
-                    val frameData = frameDataObject as Trinity<Int, String, String>
+                    @Suppress("UNCHECKED_CAST") val frameData = frameDataObject as Trinity<Int, String, String>
                     val path = frameData.second
                     val localpath = frame.sourcePosition?.file?.path
                     val functionName = frameData.third
